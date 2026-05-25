@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>名古屋旅行隨身手冊</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;700&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap');
+
+  :root {
+    --ink: #1a1612;
+    --paper: #faf6f0;
+    --accent: #c0392b;
+    --gold: #b8860b;
+    --sage: #5a7a5a;
+    --mist: #8fa8b8;
+    --warm-gray: #8c7b6b;
+    --border: #d4c9b8;
+    --tab-bg: #f0e8dc;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .header-emblem {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 36px;
+    line-height: 1;
+    color: var(--gold);
+  }
+  .header-text h1 {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+  }
+  .header-text p {
+    font-size: 12px;
+    color: #a09080;
+    letter-spacing: 0.2em;
+    margin-top: 2px;
+  }
+  .date-badge {
+    margin-left: auto;
+    background: var(--accent);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 3px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  /* Tab Navigation */
+  .tabs {
+    display: flex;
+    background: var(--ink);
+    padding: 0 32px;
+    gap: 4px;
+    border-bottom: 3px solid var(--gold);
+  }
+  .tab {
+    padding: 12px 20px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #888;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -3px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab:hover { color: var(--paper); }
+  .tab.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+    background: rgba(184,134,11,0.08);
+  }
+
+  /* Tab Content */
+  .tab-content { display: none; padding: 32px; max-width: 960px; margin: 0 auto; }
+  .tab-content.active { display: block; }
+
+  /* Section Headers */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+  }
+  .section-header h2 {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 22px;
+    font-weight: 900;
+  }
+  .section-num {
+    background: var(--accent);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .sub-header {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 28px 0 14px;
+    padding-left: 12px;
+    border-left: 3px solid var(--accent);
+  }
+
+  /* ============ JAPANESE PHRASES ============ */
+  .phrase-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  @media(max-width: 600px){ .phrase-grid { grid-template-columns: 1fr; } }
+
+  .phrase-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .phrase-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: var(--accent);
+    transform: scaleY(0);
+    transition: transform 0.2s;
+  }
+  .phrase-card:hover { border-color: var(--accent); box-shadow: 0 4px 16px rgba(192,57,43,0.12); }
+  .phrase-card:hover::before { transform: scaleY(1); }
+  .phrase-card.played { border-color: var(--sage); }
+  .phrase-card.played::before { background: var(--sage); transform: scaleY(1); }
+
+  .phrase-jp {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .phrase-reading {
+    font-size: 11px;
+    color: var(--warm-gray);
+    margin: 4px 0;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+  .phrase-zh { font-size: 14px; color: var(--ink); margin-bottom: 8px; }
+  .phrase-context {
+    font-size: 11px;
+    color: var(--mist);
+    background: #f5f0ea;
+    padding: 4px 8px;
+    border-radius: 3px;
+    display: inline-block;
+  }
+  .play-btn {
+    position: absolute;
+    bottom: 12px; right: 12px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .play-btn:hover { background: #a93226; transform: scale(1.1); }
+  .play-btn.speaking { background: var(--sage); animation: pulse 0.8s infinite; }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+
+  /* ============ SHOPPING LIST ============ */
+  .shop-category {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .shop-cat-header {
+    background: var(--tab-bg);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .shop-cat-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .shop-cat-icon { font-size: 20px; }
+  .shop-cat-badge {
+    background: var(--accent);
+    color: white;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 700;
+  }
+  .shop-cat-badge.done { background: var(--sage); }
+  .shop-items { padding: 12px 20px; }
+  .shop-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0ece6;
+    transition: all 0.2s;
+  }
+  .shop-item:last-child { border-bottom: none; }
+  .shop-item.checked { opacity: 0.5; }
+  .shop-item.checked .item-name { text-decoration: line-through; }
+
+  .shop-checkbox {
+    width: 22px; height: 22px;
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    background: white;
+  }
+  .shop-checkbox.checked { background: var(--sage); border-color: var(--sage); color: white; }
+
+  .item-info { flex: 1; }
+  .item-name { font-size: 15px; font-weight: 600; }
+  .item-detail { font-size: 12px; color: var(--warm-gray); margin-top: 2px; }
+  .item-where {
+    font-size: 11px;
+    color: var(--mist);
+    background: #f0f5fa;
+    padding: 2px 8px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-top: 4px;
+  }
+  .item-priority {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .priority-must { background: #fde8e8; color: var(--accent); }
+  .priority-nice { background: #e8f0e8; color: var(--sage); }
+  .priority-maybe { background: #f0ece6; color: var(--warm-gray); }
+
+  .shop-progress {
+    padding: 10px 20px;
+    background: #f8f4f0;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--warm-gray);
+  }
+  .progress-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill { height: 100%; background: var(--sage); border-radius: 3px; transition: width 0.4s; }
+
+  /* ============ TRAVEL DIARY ============ */
+  .diary-day {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .diary-day-header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+  }
+  .diary-day-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .diary-day-num {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .diary-day-label { font-size: 13px; color: #c8b89a; letter-spacing: 0.05em; }
+  .diary-day-theme { font-size: 15px; font-weight: 700; }
+  .diary-status {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+  }
+  .status-future { background: #333; color: #888; }
+  .status-done { background: var(--sage); color: white; }
+  .status-today { background: var(--gold); color: var(--ink); }
+
+  .diary-body { padding: 20px; display: none; }
+  .diary-body.open { display: block; }
+
+  .diary-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  @media(max-width:600px){ .diary-fields { grid-template-columns: 1fr; } }
+
+  .diary-field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--warm-gray);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .diary-field input, .diary-field select, .diary-field textarea {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--paper);
+    transition: border-color 0.2s;
+    resize: none;
+  }
+  .diary-field input:focus, .diary-field select:focus, .diary-field textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .diary-full { grid-column: 1 / -1; }
+
+  .diary-highlights {
+    margin-bottom: 16px;
+  }
+  .diary-highlights label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--warm-gray);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .highlight-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .highlight-rank {
+    width: 28px; height: 28px;
+    background: var(--gold);
+    color: var(--ink);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+  .highlight-rank:nth-child(1){ background: var(--gold); }
+  .star-rating {
+    display: flex; gap: 4px; margin-bottom: 16px;
+  }
+  .star {
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--border);
+    transition: color 0.2s;
+    user-select: none;
+  }
+  .star.lit { color: var(--gold); }
+
+  .diary-save-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    transition: all 0.2s;
+  }
+  .diary-save-btn:hover { background: #a93226; transform: translateY(-1px); }
+  .saved-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--sage);
+    margin-left: 12px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .saved-indicator.show { opacity: 1; }
+
+  /* Expense tracker in diary */
+  .expense-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .expense-row input, .expense-row select {
+    border: 1.5px solid var(--border);
+    border-radius: 5px;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--paper);
+  }
+  .expense-del {
+    background: none;
+    border: none;
+    color: var(--border);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px;
+    transition: color 0.2s;
+  }
+  .expense-del:hover { color: var(--accent); }
+  .add-expense-btn {
+    background: none;
+    border: 2px dashed var(--border);
+    color: var(--warm-gray);
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+    margin-bottom: 12px;
+  }
+  .add-expense-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .expense-total {
+    text-align: right;
+    font-size: 13px;
+    color: var(--warm-gray);
+    padding: 8px 0;
+    border-top: 1px solid var(--border);
+  }
+  .expense-total strong { color: var(--ink); font-size: 16px; }
+
+  /* Mood selector */
+  .mood-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .mood-btn {
+    padding: 8px 16px;
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+    background: white;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .mood-btn:hover, .mood-btn.selected { border-color: var(--accent); background: #fde8e8; }
+
+  /* Budget summary */
+  .budget-summary {
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .budget-summary h3 { font-family: 'Noto Serif TC', serif; font-size: 16px; margin-bottom: 16px; color: var(--gold); }
+  .budget-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #333; }
+  .budget-row:last-child { border-bottom: none; padding-top: 12px; }
+  .budget-label { font-size: 13px; color: #a0a0a0; }
+  .budget-val { font-family: 'DM Mono', monospace; font-size: 15px; }
+  .budget-total-val { font-size: 20px; color: var(--gold); font-weight: 700; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--paper); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-emblem">名</div>
+  <div class="header-text">
+    <h1>名古屋旅行隨身手冊</h1>
+    <p>NAGOYA TRAVEL COMPANION · 2026.07.28–08.04</p>
+  </div>
+  <div class="date-badge">8 天行程</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('phrases')">🗣️ 日語速查</div>
+  <div class="tab" onclick="switchTab('shopping')">🛍️ 採購清單</div>
+  <div class="tab" onclick="switchTab('diary')">📔 旅行日記</div>
+  <div class="tab" onclick="switchTab('budget')">💴 花費記錄</div>
+</div>
+
+<!-- ==================== PHRASES TAB ==================== -->
+<div id="tab-phrases" class="tab-content active">
+  <div class="section-header">
+    <div class="section-num">語</div>
+    <h2>場景日語速查卡</h2>
+  </div>
+  <p style="color:var(--warm-gray);font-size:13px;margin-bottom:24px;">點擊卡片或 ▶ 按鈕可朗讀日語。依場景分類，旅途中直接搜尋使用。</p>
+
+  <div class="sub-header">🎟 購票 / 入場</div>
+  <div class="phrase-grid" id="grid-ticket"></div>
+
+  <div class="sub-header">🍜 餐廳 / 點餐</div>
+  <div class="phrase-grid" id="grid-food"></div>
+
+  <div class="sub-header">🛍 購物 / 退稅</div>
+  <div class="phrase-grid" id="grid-shop"></div>
+
+  <div class="sub-header">🚌 交通 / 問路</div>
+  <div class="phrase-grid" id="grid-transport"></div>
+
+  <div class="sub-header">🏨 飯店</div>
+  <div class="phrase-grid" id="grid-hotel"></div>
+
+  <div class="sub-header">🎢 吉卜力公園 / 樂高樂園</div>
+  <div class="phrase-grid" id="grid-park"></div>
+</div>
+
+<!-- ==================== SHOPPING TAB ==================== -->
+<div id="tab-shopping" class="tab-content">
+  <div class="section-header">
+    <div class="section-num">買</div>
+    <h2>名古屋採購清單</h2>
+  </div>
+  <p style="color:var(--warm-gray);font-size:13px;margin-bottom:24px;">依照採購地點分類。點擊勾選已購買的項目。</p>
+  <div id="shopping-lists"></div>
+</div>
+
+<!-- ==================== DIARY TAB ==================== -->
+<div id="tab-diary" class="tab-content">
+  <div class="section-header">
+    <div class="section-num">記</div>
+    <h2>每日旅行日記</h2>
+  </div>
+  <p style="color:var(--warm-gray);font-size:13px;margin-bottom:24px;">點擊展開各天，記錄天氣、心情、最難忘的時刻與花費。資料儲存在瀏覽器本機。</p>
+  <div id="diary-entries"></div>
+</div>
+
+<!-- ==================== BUDGET TAB ==================== -->
+<div id="tab-budget" class="tab-content">
+  <div class="section-header">
+    <div class="section-num">帳</div>
+    <h2>旅行花費總覽</h2>
+  </div>
+
+  <div class="budget-summary">
+    <h3>💴 三人預算範圍（NTD）</h3>
+    <div class="budget-row">
+      <span class="budget-label">樂觀預算</span>
+      <span class="budget-val" style="color:#6adf8a">NT$ 158,820</span>
+    </div>
+    <div class="budget-row">
+      <span class="budget-label">中等預算</span>
+      <span class="budget-val" style="color:var(--gold)">NT$ 201,920</span>
+    </div>
+    <div class="budget-row">
+      <span class="budget-label">寬裕預算</span>
+      <span class="budget-val" style="color:#ff8080">NT$ 262,020</span>
+    </div>
+    <div class="budget-row">
+      <span class="budget-label">人均（中等）</span>
+      <span class="budget-val budget-total-val">NT$ 67,307</span>
+    </div>
+  </div>
+
+  <div class="sub-header">📋 實際花費記錄</div>
+  <p style="color:var(--warm-gray);font-size:13px;margin-bottom:20px;">在各天日記中加入花費，此處自動匯總。或在下方快速新增。</p>
+
+  <div id="budget-quick-add">
+    <div style="display:grid;grid-template-columns:1fr 1fr 120px 120px auto;gap:8px;margin-bottom:8px;font-size:11px;color:var(--warm-gray);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">
+      <span>項目</span><span>類別</span><span>日期</span><span>金額(¥)</span><span></span>
+    </div>
+    <div id="quick-expenses"></div>
+    <button class="add-expense-btn" onclick="addQuickExpense()">＋ 新增花費</button>
+    <div class="expense-total">
+      三人合計花費：<strong id="total-yen">¥0</strong>（約 <strong id="total-ntd">NT$0</strong>）
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== DATA ====================
+
+const phrases = {
+  ticket: [
+    { jp:'一人いくらですか？', reading:'ひとりいくらですか', zh:'請問一個人多少錢？', ctx:'買票時詢問票價' },
+    { jp:'大人二枚、子供一枚をください', reading:'おとなにまい、こどもいちまい', zh:'兩張大人票、一張小孩票', ctx:'購買多張票' },
+    { jp:'プレミアムチケットはありますか？', reading:'プレミアムチケットはありますか', zh:'請問有 Premium 票嗎？', ctx:'吉卜力公園專用' },
+    { jp:'入場のパスポートを見せてください', reading:'にゅうじょうのパスポートをみせてください', zh:'請出示護照', ctx:'吉卜力公園入場核驗' },
+    { jp:'何時まで開いていますか？', reading:'なんじまであいていますか', zh:'請問幾點關閉？', ctx:'確認最晚入場時間' },
+    { jp:'今日は混んでいますか？', reading:'きょうはこんでいますか', zh:'請問今天人多嗎？', ctx:'詢問排隊狀況' },
+  ],
+  food: [
+    { jp:'ひつまぶしを一つお願いします', reading:'ひつまぶしをひとつおねがいします', zh:'請給我一份鰻魚飯', ctx:'蓬萊軒點餐' },
+    { jp:'予約した者ですが、黄坤浩と申します', reading:'よやくしたものですが、コウコンコウともうします', zh:'我有預約，我姓黃', ctx:'蓬萊軒到店報到' },
+    { jp:'辛いですか？', reading:'からいですか', zh:'這個辣嗎？', ctx:'台灣拉麵詢問辣度' },
+    { jp:'お水をもう一杯ください', reading:'おみずをもういっぱいください', zh:'請再給我一杯水', ctx:'用餐中補水' },
+    { jp:'お会計をお願いします', reading:'おかいけいをおねがいします', zh:'請結帳', ctx:'通用結帳' },
+    { jp:'飛騨牛の握りを二つください', reading:'ひだぎゅうのにぎりをふたつください', zh:'請給我兩個飛驒牛壽司', ctx:'高山壽司店點餐' },
+    { jp:'食べ歩き用はありますか？', reading:'たべあるきようはありますか', zh:'有外帶走的版本嗎？', ctx:'城下町邊走邊吃' },
+    { jp:'アレルギーがあります', reading:'アレルギーがあります', zh:'我有過敏', ctx:'告知店員' },
+  ],
+  shop: [
+    { jp:'税込価格はいくらですか？', reading:'ぜいこみかかくはいくらですか', zh:'含稅後多少錢？', ctx:'確認最終價格' },
+    { jp:'免税手続きをお願いします', reading:'めんぜいてつづきをおねがいします', zh:'請幫我辦理退稅', ctx:'購物後退稅' },
+    { jp:'パスポートをお持ちですか？', reading:'パスポートをおもちですか', zh:'您有帶護照嗎？', ctx:'退稅必須出示護照' },
+    { jp:'別々に包んでもらえますか？', reading:'べつべつにつつんでもらえますか', zh:'可以分開包裝嗎？', ctx:'伴手禮包裝要求' },
+    { jp:'試着してもいいですか？', reading:'しちゃくしてもいいですか', zh:'可以試穿嗎？', ctx:'服裝試穿' },
+    { jp:'在庫はありますか？', reading:'ざいこはありますか', zh:'還有庫存嗎？', ctx:'詢問特定商品' },
+    { jp:'これを五千円以上買ったら免税できますか？', reading:'これをごせんえんいじょうかったらめんぜいできますか', zh:'買這個滿五千元可以退稅嗎？', ctx:'BicCamera 退稅詢問' },
+  ],
+  transport: [
+    { jp:'高山行きのバスはどこから出ますか？', reading:'たかやまゆきのバスはどこからでますか', zh:'前往高山的巴士從哪裡出發？', ctx:'Day 6 高山巴士' },
+    { jp:'次のバスは何時ですか？', reading:'つぎのバスはなんじですか', zh:'下一班巴士幾點？', ctx:'確認班次' },
+    { jp:'白川郷まで何分かかりますか？', reading:'しらかわごうまでなんぷんかかりますか', zh:'到白川鄉要幾分鐘？', ctx:'行程詢問' },
+    { jp:'名古屋駅まで行きたいのですが', reading:'なごやえきまでいきたいのですが', zh:'我想去名古屋車站', ctx:'詢問路線' },
+    { jp:'この電車は名古屋港に止まりますか？', reading:'このでんしゃはなごやこうにとまりますか', zh:'這班電車有停名古屋港嗎？', ctx:'搭錯車確認' },
+    { jp:'乗り換えはどこですか？', reading:'のりかえはどこですか', zh:'在哪裡換車？', ctx:'轉乘問路' },
+    { jp:'ここから歩いて何分ですか？', reading:'ここからあるいてなんぷんですか', zh:'從這裡走路幾分鐘？', ctx:'步行距離詢問' },
+  ],
+  hotel: [
+    { jp:'チェックインをお願いします', reading:'チェックインをおねがいします', zh:'我要辦理入住', ctx:'到飯店報到' },
+    { jp:'荷物を預かっていただけますか？', reading:'にもつをあずかっていただけますか', zh:'可以幫我寄放行李嗎？', ctx:'提早到達或退房後' },
+    { jp:'大浴場は何時まで使えますか？', reading:'だいよくじょうはなんじまでつかえますか', zh:'大浴場幾點到幾點可以使用？', ctx:'Vessel Hotel 浴場詢問' },
+    { jp:'朝食は何時からですか？', reading:'ちょうしょくはなんじからですか', zh:'早餐幾點開始供應？', ctx:'飯店早餐時間' },
+    { jp:'枕をもう一つもらえますか？', reading:'まくらをもうひとつもらえますか', zh:'可以多給一個枕頭嗎？', ctx:'三人房備品需求' },
+  ],
+  park: [
+    { jp:'プレミアム大さんぽ券を持っています', reading:'プレミアムおおさんぽけんをもっています', zh:'我有 Premium 大散步券', ctx:'吉卜力公園入場' },
+    { jp:'ハウルの動く城はどこですか？', reading:'ハウルのうごくしろはどこですか', zh:'霍爾的移動城堡在哪裡？', ctx:'吉卜力地圖確認' },
+    { jp:'水鉄砲のエリアはどこですか？', reading:'みずてっぽうのエリアはどこですか', zh:'水槍活動區域在哪裡？', ctx:'樂高樂園夏季水戰' },
+    { jp:'写真を撮ってもいいですか？', reading:'しゃしんをとってもいいですか', zh:'請問可以拍照嗎？', ctx:'不確定是否禁拍時詢問' },
+    { jp:'ロッカーはありますか？', reading:'ロッカーはありますか', zh:'請問有置物櫃嗎？', ctx:'存放行李' },
+    { jp:'このアトラクションの待ち時間はどのくらいですか？', reading:'このアトラクションのまちじかんはどのくらいですか', zh:'這個設施要等多久？', ctx:'樂高樂園排隊確認' },
+  ]
+};
+
+const shoppingData = [
+  {
+    category: '💊 藥妝 / 日用品',
+    location: '千里馬藥局、唐吉訶德、AEON',
+    items: [
+      { name: '曼秀雷敦防曬乳 SPF50+', detail: '高山氣溫低但日照強，多帶兩條', where: '千里馬 / AEON', priority: 'must' },
+      { name: 'ムヒ止癢軟膏', detail: '夏季被蚊蟲叮咬必備', where: '千里馬', priority: 'must' },
+      { name: '正露丸 / 整腸藥', detail: '飲食改變預防腸胃不適', where: '千里馬', priority: 'must' },
+      { name: '口腔清涼噴霧（ブレスケア）', detail: '整天在外出門必備', where: '唐吉訶德', priority: 'nice' },
+      { name: '足貼（足用カイロ型）', detail: '吉卜力、大須長時間步行用', where: '千里馬', priority: 'nice' },
+      { name: '眼藥水（目薬）', detail: '長時間室內照明、冷氣乾燥', where: '任何藥局', priority: 'nice' },
+      { name: '美白面膜', detail: '旅途後護膚', where: '千里馬 / AEON', priority: 'maybe' },
+    ]
+  },
+  {
+    category: '🍫 零食 / 伴手禮',
+    location: 'JR 高島屋 B1–B2、大須商店街、犬山城下町',
+    items: [
+      { name: '青柳総本家 ういろう（外郎餅）', detail: '名古屋最代表性和菓子', where: 'JR 高島屋 B1', priority: 'must' },
+      { name: '千寿 天むす セット', detail: '蝦天婦羅飯糰禮盒，送禮首選', where: '大須觀音附近', priority: 'must' },
+      { name: '飛騨牛カレー缶', detail: '高山土產，真材實料', where: '高山老街', priority: 'must' },
+      { name: '赤福餅', detail: '熱田神宮附近名物，限定版包裝', where: '熱田神宮境內', priority: 'nice' },
+      { name: '名古屋コーチン 加工品', detail: '名古屋特有雞肉加工品', where: 'JR 高島屋', priority: 'nice' },
+      { name: '吉卜力限定餅乾（スタジオジブリ）', detail: '吉卜力公園內限定', where: '吉卜力公園', priority: 'maybe' },
+      { name: '犬山城下町 五平餅', detail: '城下町名物，現烤不能帶走，現吃', where: '犬山城下町', priority: 'nice' },
+    ]
+  },
+  {
+    category: '⚡ 電器 / 3C',
+    location: 'BicCamera（名古屋車站旁）',
+    items: [
+      { name: 'Panasonic 奈米水離子吹風機', detail: '台灣同款但更便宜，含稅退稅後約 NT$2,500', where: 'BicCamera', priority: 'nice' },
+      { name: 'Switch 遊戲軟體（日版）', detail: '日版限定遊戲，價格比台灣便宜', where: 'BicCamera', priority: 'maybe' },
+      { name: 'CASIO G-SHOCK（日版）', detail: '日版配色多、含稅退稅後更划算', where: 'BicCamera', priority: 'maybe' },
+      { name: 'USB-C 多孔充電器', detail: '日本同電壓，旅遊期間充電方便', where: 'BicCamera', priority: 'nice' },
+    ]
+  },
+  {
+    category: '👔 服飾 / 生活雜貨',
+    location: 'HAERA（榮）、LACHIC、唐吉訶德',
+    items: [
+      { name: 'UNIQLO 機能 T 恤（日版限定色）', detail: 'AIRism 夏季限定顏色', where: 'HAERA / JR 高島屋', priority: 'nice' },
+      { name: '3COINS / SERIA 百元店雜貨', detail: '台灣少見的日用品設計品', where: '則武之森 AEON MALL', priority: 'nice' },
+      { name: '扇子（うちわ）', detail: '夏季戶外消暑必備', where: '大須商店街', priority: 'must' },
+      { name: '犬山城紀念御守', detail: '日本最古天守限定御守', where: '犬山城內', priority: 'nice' },
+      { name: '熱田神宮 御朱印帳', detail: '若有御朱印收集習慣', where: '熱田神宮境內', priority: 'maybe' },
+    ]
+  }
+];
+
+const diaryDays = [
+  { num: 1, date: '7/28（二）', theme: '抵達名古屋・輕鬆入住', spots: 'JR 高島屋美食街', status: 'future' },
+  { num: 2, date: '7/29（三）', theme: '名古屋城下町 × 榮商圈 × MIRAI 塔', spots: '名古屋城、德川美術館、HAERA、MIRAI 塔', status: 'future' },
+  { num: 3, date: '7/30（四）', theme: '犬山城 × 熱田神宮 × 大須商店街', spots: '犬山城、熱田神宮、大須', status: 'future' },
+  { num: 4, date: '7/31（五）', theme: '吉卜力公園全日沉浸', spots: '吉卜力公園（Premium 票）', status: 'future' },
+  { num: 5, date: '8/1（六）', theme: '樂高樂園全日', spots: 'LEGOLAND Japan', status: 'future' },
+  { num: 6, date: '8/2（日）', theme: '飛驒高山 × 白川鄉', spots: '高山老街、白川鄉合掌村', status: 'future' },
+  { num: 7, date: '8/3（一）', theme: '豐田技術館 × 名古屋港', spots: '豐田技術紀念館、水族館、磁浮鐵道館', status: 'future' },
+  { num: 8, date: '8/4（二）', theme: '悠閒返台', spots: '則武之森、車站採購、JX839', status: 'future' },
+];
+
+// ==================== RENDER FUNCTIONS ====================
+
+function renderPhrases() {
+  const grids = { ticket:'grid-ticket', food:'grid-food', shop:'grid-shop', transport:'grid-transport', hotel:'grid-hotel', park:'grid-park' };
+  Object.entries(grids).forEach(([key, id]) => {
+    const grid = document.getElementById(id);
+    if (!grid) return;
+    grid.innerHTML = phrases[key].map((p, i) => `
+      <div class="phrase-card" id="pc-${key}-${i}">
+        <div class="phrase-jp">${p.jp}</div>
+        <div class="phrase-reading">${p.reading}</div>
+        <div class="phrase-zh">${p.zh}</div>
+        <span class="phrase-context">${p.ctx}</span>
+        <button class="play-btn" id="btn-${key}-${i}" onclick="speak('${p.jp}','${key}','${i}')">▶</button>
+      </div>
+    `).join('');
+  });
+}
+
+function speak(text, key, i) {
+  if (!('speechSynthesis' in window)) { alert('此瀏覽器不支援語音朗讀'); return; }
+  window.speechSynthesis.cancel();
+  const btn = document.getElementById(`btn-${key}-${i}`);
+  const card = document.getElementById(`pc-${key}-${i}`);
+  btn.classList.add('speaking');
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'ja-JP';
+  utter.rate = 0.9;
+  utter.onend = () => { btn.classList.remove('speaking'); card.classList.add('played'); btn.textContent = '✓'; };
+  window.speechSynthesis.speak(utter);
+}
+
+function renderShopping() {
+  const container = document.getElementById('shopping-lists');
+  container.innerHTML = shoppingData.map((cat, ci) => {
+    const items = cat.items.map((item, ii) => `
+      <div class="shop-item" id="sitem-${ci}-${ii}">
+        <div class="shop-checkbox" id="scb-${ci}-${ii}" onclick="toggleShop(${ci},${ii})"></div>
+        <div class="item-info">
+          <div class="item-name">${item.name}</div>
+          <div class="item-detail">${item.detail}</div>
+          <span class="item-where">📍 ${item.where}</span>
+        </div>
+        <span class="item-priority priority-${item.priority}">${item.priority==='must'?'必買':item.priority==='nice'?'推薦':'可考慮'}</span>
+      </div>
+    `).join('');
+    return `
+      <div class="shop-category">
+        <div class="shop-cat-header" onclick="toggleCat(${ci})">
+          <div class="shop-cat-title">
+            <span class="shop-cat-icon">${cat.category.split(' ')[0]}</span>
+            ${cat.category.slice(2)}
+          </div>
+          <span class="shop-cat-badge" id="cat-badge-${ci}">0 / ${cat.items.length}</span>
+        </div>
+        <div class="shop-items" id="cat-items-${ci}">${items}</div>
+        <div class="shop-progress">
+          <span id="cat-prog-text-${ci}">0 / ${cat.items.length} 已勾選</span>
+          <div class="progress-bar"><div class="progress-fill" id="cat-prog-${ci}" style="width:0%"></div></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  loadShoppingState();
+}
+
+function toggleShop(ci, ii) {
+  const key = `shop-${ci}-${ii}`;
+  const checked = localStorage.getItem(key) === 'true';
+  localStorage.setItem(key, !checked);
+  updateShopItem(ci, ii, !checked);
+  updateCatProgress(ci);
+}
+
+function updateShopItem(ci, ii, checked) {
+  const item = document.getElementById(`sitem-${ci}-${ii}`);
+  const cb = document.getElementById(`scb-${ci}-${ii}`);
+  if (checked) { item.classList.add('checked'); cb.classList.add('checked'); cb.textContent = '✓'; }
+  else { item.classList.remove('checked'); cb.classList.remove('checked'); cb.textContent = ''; }
+}
+
+function updateCatProgress(ci) {
+  const total = shoppingData[ci].items.length;
+  let done = 0;
+  for (let ii = 0; ii < total; ii++) {
+    if (localStorage.getItem(`shop-${ci}-${ii}`) === 'true') done++;
+  }
+  const pct = Math.round(done / total * 100);
+  document.getElementById(`cat-prog-${ci}`).style.width = pct + '%';
+  document.getElementById(`cat-prog-text-${ci}`).textContent = `${done} / ${total} 已勾選`;
+  const badge = document.getElementById(`cat-badge-${ci}`);
+  badge.textContent = `${done} / ${total}`;
+  badge.className = 'shop-cat-badge' + (done === total ? ' done' : '');
+}
+
+function loadShoppingState() {
+  shoppingData.forEach((cat, ci) => {
+    cat.items.forEach((_, ii) => {
+      const checked = localStorage.getItem(`shop-${ci}-${ii}`) === 'true';
+      if (checked) updateShopItem(ci, ii, true);
+    });
+    updateCatProgress(ci);
+  });
+}
+
+function toggleCat(ci) {
+  const items = document.getElementById(`cat-items-${ci}`);
+  items.style.display = items.style.display === 'none' ? '' : 'none';
+}
+
+function renderDiary() {
+  const container = document.getElementById('diary-entries');
+  container.innerHTML = diaryDays.map(day => `
+    <div class="diary-day">
+      <div class="diary-day-header" onclick="toggleDiary(${day.num})">
+        <div class="diary-day-info">
+          <div class="diary-day-num">D${day.num}</div>
+          <div>
+            <div class="diary-day-label">${day.date}</div>
+            <div class="diary-day-theme">${day.theme}</div>
+          </div>
+        </div>
+        <span class="diary-status status-${day.status}">${day.status==='future'?'未到':'今天'==='done'?'已記錄':'今天'}</span>
+      </div>
+      <div class="diary-body" id="diary-body-${day.num}">
+        <div class="diary-fields">
+          <div class="diary-field">
+            <label>🌤 天氣</label>
+            <select id="d${day.num}-weather">
+              <option value="">選擇天氣</option>
+              <option>☀️ 晴天</option>
+              <option>⛅ 多雲</option>
+              <option>🌧 下雨</option>
+              <option>⛈ 雷陣雨</option>
+              <option>🌫 霧</option>
+            </select>
+          </div>
+          <div class="diary-field">
+            <label>🌡 氣溫 (°C)</label>
+            <input type="text" id="d${day.num}-temp" placeholder="例：35°C / 體感 40°C">
+          </div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="display:block;font-size:11px;font-weight:700;letter-spacing:0.1em;color:var(--warm-gray);text-transform:uppercase;margin-bottom:8px;">😊 今天心情</label>
+          <div class="mood-grid" id="mood-${day.num}">
+            ${['😄 超開心','😊 很滿足','😌 平靜','😅 有點累','😰 很趕','🤩 驚艷'   ].map(m=>`<div class="mood-btn" onclick="selectMood(${day.num},this)">${m}</div>`).join('')}
+          </div>
+        </div>
+        <div class="diary-field diary-full" style="margin-bottom:16px;">
+          <label>✨ 今天最難忘的時刻</label>
+          <textarea id="d${day.num}-highlight" rows="3" placeholder="寫下讓你最感動或最印象深刻的一幕..."></textarea>
+        </div>
+        <div class="diary-field diary-full" style="margin-bottom:16px;">
+          <label>🍜 今天吃到最好吃的是</label>
+          <input type="text" id="d${day.num}-food" placeholder="店名 / 料理名稱">
+        </div>
+        <div class="diary-field diary-full" style="margin-bottom:16px;">
+          <label>📝 備忘 / 明天注意事項</label>
+          <textarea id="d${day.num}-note" rows="2" placeholder="忘記帶的東西、明天要早起的提醒..."></textarea>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="display:block;font-size:11px;font-weight:700;letter-spacing:0.1em;color:var(--warm-gray);text-transform:uppercase;margin-bottom:8px;">⭐ 今天幾顆星？</label>
+          <div class="star-rating" id="stars-${day.num}">
+            ${[1,2,3,4,5].map(n=>`<span class="star" onclick="rateStar(${day.num},${n})">★</span>`).join('')}
+          </div>
+        </div>
+        <button class="diary-save-btn" onclick="saveDiary(${day.num})">💾 儲存今天</button>
+        <span class="saved-indicator" id="saved-${day.num}">✅ 已儲存</span>
+      </div>
+    </div>
+  `).join('');
+  diaryDays.forEach(d => loadDiary(d.num));
+}
+
+function toggleDiary(num) {
+  const body = document.getElementById(`diary-body-${num}`);
+  body.classList.toggle('open');
+}
+
+function selectMood(num, el) {
+  document.querySelectorAll(`#mood-${num} .mood-btn`).forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function rateStar(num, rating) {
+  const stars = document.querySelectorAll(`#stars-${num} .star`);
+  stars.forEach((s, i) => s.classList.toggle('lit', i < rating));
+  localStorage.setItem(`diary-${num}-stars`, rating);
+}
+
+function saveDiary(num) {
+  const data = {
+    weather: document.getElementById(`d${num}-weather`)?.value,
+    temp: document.getElementById(`d${num}-temp`)?.value,
+    mood: document.querySelector(`#mood-${num} .mood-btn.selected`)?.textContent,
+    highlight: document.getElementById(`d${num}-highlight`)?.value,
+    food: document.getElementById(`d${num}-food`)?.value,
+    note: document.getElementById(`d${num}-note`)?.value,
+    stars: localStorage.getItem(`diary-${num}-stars`),
+  };
+  localStorage.setItem(`diary-${num}`, JSON.stringify(data));
+  const indicator = document.getElementById(`saved-${num}`);
+  indicator.classList.add('show');
+  setTimeout(() => indicator.classList.remove('show'), 2500);
+}
+
+function loadDiary(num) {
+  const raw = localStorage.getItem(`diary-${num}`);
+  if (!raw) return;
+  try {
+    const d = JSON.parse(raw);
+    if (d.weather) document.getElementById(`d${num}-weather`).value = d.weather;
+    if (d.temp) document.getElementById(`d${num}-temp`).value = d.temp;
+    if (d.highlight) document.getElementById(`d${num}-highlight`).value = d.highlight;
+    if (d.food) document.getElementById(`d${num}-food`).value = d.food;
+    if (d.note) document.getElementById(`d${num}-note`).value = d.note;
+    if (d.stars) rateStar(num, parseInt(d.stars));
+    if (d.mood) {
+      document.querySelectorAll(`#mood-${num} .mood-btn`).forEach(b => {
+        if (b.textContent.trim() === d.mood.trim()) b.classList.add('selected');
+      });
+    }
+  } catch(e) {}
+}
+
+// ==================== BUDGET ====================
+
+let expenses = JSON.parse(localStorage.getItem('quick-expenses') || '[]');
+
+function renderQuickExpenses() {
+  const container = document.getElementById('quick-expenses');
+  container.innerHTML = expenses.map((exp, i) => `
+    <div class="expense-row">
+      <input type="text" value="${exp.name||''}" onchange="updateExp(${i},'name',this.value)" placeholder="項目名稱">
+      <select onchange="updateExp(${i},'cat',this.value)">
+        <option ${exp.cat==='食'?'selected':''}>食</option>
+        <option ${exp.cat==='交通'?'selected':''}>交通</option>
+        <option ${exp.cat==='購物'?'selected':''}>購物</option>
+        <option ${exp.cat==='門票'?'selected':''}>門票</option>
+        <option ${exp.cat==='住'?'selected':''}>住</option>
+        <option ${exp.cat==='其他'?'selected':''}>其他</option>
+      </select>
+      <select onchange="updateExp(${i},'day',this.value)">
+        ${[...Array(8)].map((_,d)=>`<option ${exp.day===(d+1)?'selected':''}>Day ${d+1}</option>`).join('')}
+      </select>
+      <input type="number" value="${exp.amount||''}" onchange="updateExp(${i},'amount',this.value)" placeholder="¥">
+      <button class="expense-del" onclick="delExp(${i})">×</button>
+    </div>
+  `).join('');
+  updateTotals();
+}
+
+function addQuickExpense() {
+  expenses.push({ name:'', cat:'食', day:1, amount:0 });
+  saveExpenses();
+  renderQuickExpenses();
+}
+
+function updateExp(i, field, val) {
+  expenses[i][field] = field === 'amount' ? parseFloat(val)||0 : val;
+  saveExpenses();
+  updateTotals();
+}
+
+function delExp(i) {
+  expenses.splice(i, 1);
+  saveExpenses();
+  renderQuickExpenses();
+}
+
+function saveExpenses() { localStorage.setItem('quick-expenses', JSON.stringify(expenses)); }
+
+function updateTotals() {
+  const total = expenses.reduce((sum, e) => sum + (parseFloat(e.amount)||0), 0);
+  document.getElementById('total-yen').textContent = '¥' + total.toLocaleString();
+  document.getElementById('total-ntd').textContent = 'NT$' + Math.round(total * 0.22).toLocaleString();
+}
+
+// ==================== TABS ====================
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t, i) => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ==================== INIT ====================
+
+renderPhrases();
+renderShopping();
+renderDiary();
+renderQuickExpenses();
+</script>
+</body>
+</html>
